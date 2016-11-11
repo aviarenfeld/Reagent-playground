@@ -1,0 +1,108 @@
+/* Variables  */
+
+// Colors:
+// Should be assigned to "roles", never used directly.
+$jade       : #00C1A1;
+$jade-dark  : #455E57;
+$coral      : #F46969;
+$rouge      : #FF3B00;
+
+$grey-dark  : #444444;
+$grey       : #7E7E7E;
+$grey-med   : #E0E6E9;
+$grey-light : #F2F2F2;
+
+$dark-slate : #171B1E;
+$dim-slate  : #23282B;
+$dank-slate : #2A3235;
+$dead-slate : #1E2428;
+$slate      : #48565C;
+
+$dark-label : white;
+$dim-label  : #A4AAAE;
+$dank-label : #62656B;
+
+// Color Roles:
+// Roles can change more easily than named colors.
+$accent             : $jade;
+$emphasis           : $coral;
+$alert              : $rouge;
+
+$background-color   : $grey-med;
+$foreground-color   : white;
+$base-font-color    : $grey;
+$base-heading-color : $jade-dark;
+$base-link-color    : $accent;
+$base-link-hover    : $emphasis;
+
+$base-border-color  : $grey-med;
+$base-icon-color    : $grey;
+$alt-icon-color     : $dim-label;
+
+$progress-track     : $slate;
+$progress-status    : $accent;
+
+// Fonts:
+$base-font-family : "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$base-font-size : em( 16 );
+$base-line-height : 1.6;
+
+// Measurements:
+$toolbar-height     : 60px;
+$menu-width         : 200px;
+$menu-compact-width : 60px;
+$session-width      : 200px;
+
+// Depths:
+$background   : 1000;
+$middleground : 2000;
+$foreground   : 3000;
+
+// Animation Styles:
+$layout-shift: 333ms ease-out;
+$overlay-shift: 456ms ease-out;
+
+// Grid & Layout Values:
+@import 'neat-helpers';
+
+// Neat Overrides
+// $column       : em(90);
+// $gutter       : em(18);
+// $grid-columns : 12;
+$max-width       : em(1200);
+
+// Neat Utilities
+// $visual-grid: true; // Un-comment for visual grid.
+$visual-grid-color   : black;
+$visual-grid-opacity : 0.1;
+$visual-grid-index   : front;
+
+// Neat Breakpoints
+$screen-xs    : em(480);
+$screen-sm    : em(768);
+$screen-md    : em(970);
+$screen-lg    : em(1200);
+$screen-short : em(900);
+
+// Media Queries:
+// For min-width queries, above the breakpoint
+$min-xs    : new-breakpoint(min-width $screen-xs);
+$min-sm    : new-breakpoint(min-width $screen-sm);
+$min-md    : new-breakpoint(min-width $screen-md);
+$min-lg    : new-breakpoint(min-width $screen-lg);
+$min-short : new-breakpoint(min-height $screen-short);
+
+// For max-width queries, below the breakpoint
+$max-xs    : new-breakpoint(max-width $screen-xs - 1);
+$max-sm    : new-breakpoint(max-width $screen-sm - 1);
+$max-md    : new-breakpoint(max-width $screen-md - 1);
+$max-lg    : new-breakpoint(max-width $screen-lg - 1);
+$max-short : new-breakpoint(max-height $screen-short - 1);
+
+// Combos: Between the min and max breakpoints
+$btw-xs-sm : new-breakpoint( min-width $screen-xs max-width $screen-sm - 1 );
+$btw-sm-md : new-breakpoint( min-width $screen-sm max-width $screen-md - 1 );
+$btw-md-lg : new-breakpoint( min-width $screen-md max-width $screen-lg - 1 );
+
+
+// Usage: @include media($min-sm) { ... }

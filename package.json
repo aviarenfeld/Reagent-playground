@@ -1,0 +1,134 @@
+{
+  "name": "reagent",
+  "version": "1.0.0",
+  "description": "React application chemistry set.",
+  "main": "gulpfile.js",
+  "scripts": {
+    "build:production": "NODE_ENV=production gulp build && babel server --compact true --no-comments -d public/server --presets es2015,stage-2",
+    "dev": "concurrently --kill-others -p \"[{name}]\" -n \"gulp,exps\" -c \"magenta,blue\" gulp \"npm run server\"",
+    "start": "npm run server",
+    "postinstall": "jspm install",
+    "server": "DEBUG=server:*,re:* nodemon --watch server ./server/bin/www.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:EMN/reagent.git"
+  },
+  "author": "André Malkine",
+  "contributors": [
+    "Wayne Walrath <wayne@evolvingmedia.net>"
+  ],
+  "license": "ISC",
+  "jspm": {
+    "directories": {
+      "baseURL": "public"
+    },
+    "dependencies": {
+      "classnames": "npm:classnames@^2.2.5",
+      "debug": "npm:debug@^2.2.0",
+      "es6-promise": "npm:es6-promise@^4.0.5",
+      "es6-shim": "github:es-shims/es6-shim@^0.35.1",
+      "exenv": "npm:exenv@^1.2.1",
+      "flux-standard-action": "npm:flux-standard-action@^0.6.1",
+      "history": "npm:history@2.1.2",
+      "react": "npm:react@^15.3.2",
+      "react-addons-css-transition-group": "npm:react-addons-css-transition-group@^15.3.2",
+      "react-dom": "npm:react-dom@^15.3.2",
+      "react-ga": "npm:react-ga@^2.1.2",
+      "react-helmet": "npm:react-helmet@^3.1.0",
+      "react-redux": "npm:react-redux@^4.4.5",
+      "react-router": "npm:react-router@^2.8.1",
+      "react-router-redux": "npm:react-router-redux@^4.0.6",
+      "redux": "npm:redux@^3.6.0",
+      "redux-devtools": "npm:redux-devtools@^3.3.1",
+      "redux-devtools-dock-monitor": "npm:redux-devtools-dock-monitor@^1.1.1",
+      "redux-devtools-log-monitor": "npm:redux-devtools-log-monitor@^1.0.11",
+      "redux-thunk": "npm:redux-thunk@^2.1.0",
+      "whatwg-fetch": "npm:whatwg-fetch@^1.0.0"
+    },
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.8.24",
+      "babel-core": "npm:babel-core@^6.17.0",
+      "babel-runtime": "npm:babel-runtime@^5.8.24",
+      "core-js": "npm:core-js@^1.1.4"
+    }
+  },
+  "devDependencies": {
+    "babel-cli": "^6.16.0",
+    "babel-core": "^6.17.0",
+    "babel-eslint": "^4.1.8",
+    "babel-preset-babili": "0.0.5",
+    "babel-preset-es2015": "^6.16.0",
+    "babel-preset-stage-2": "^6.17.0",
+    "babel-watch": "^2.0.3",
+    "browser-sync": "^2.17.3",
+    "chalk": "^1.1.3",
+    "concurrently": "^3.1.0",
+    "connect-history-api-fallback": "^1.3.0",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-changed": "^1.3.2",
+    "gulp-eslint": "^1.1.1",
+    "gulp-filter": "^3.0.1",
+    "gulp-htmlmin": "^1.3.0",
+    "gulp-iconfont": "^5.0.1",
+    "gulp-imagemin": "^2.4.0",
+    "gulp-notify": "^2.2.0",
+    "gulp-plumber": "^1.1.0",
+    "gulp-remove-code": "^1.0.2",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.5.4",
+    "gulp-sass": "^2.3.2",
+    "gulp-sequence": "^0.4.6",
+    "gulp-sourcemaps": "^1.7.3",
+    "gulp-swig": "^0.8.0",
+    "gulp-touch": "^1.0.1",
+    "gulp-util": "^3.0.7",
+    "gulp-watch": "^4.3.10",
+    "jspm": "^0.16.46",
+    "minimist": "^1.2.0",
+    "node-neat": "^1.7.2",
+    "nodemon": "^1.11.0",
+    "require-dir": "^0.3.1",
+    "shelljs": "^0.7.4"
+  },
+  "dependencies": {
+    "bluebird": "^3.4.6",
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "debug": "^2.2.0",
+    "dotenv": "^2.0.0",
+    "express": "^4.14.0",
+    "hbs": "^4.0.1",
+    "morgan": "^1.7.0",
+    "node-fetch": "^1.6.3",
+    "serve-favicon": "^2.3.0"
+  },
+  "serverDependencies": {
+    "dependencies": {
+      "bluebird": "^3.4.6",
+      "body-parser": "~1.15.1",
+      "cookie-parser": "~1.4.3",
+      "debug": "^2.2.0",
+      "express": "~4.13.4",
+      "hbs": "~4.0.0",
+      "morgan": "~1.7.0",
+      "serve-favicon": "~2.3.0"
+    },
+    "devDependencies": {
+      "babel-core": "^6.17.0",
+      "babel-eslint": "^7.0.0",
+      "babel-preset-babili": "0.0.5",
+      "babel-preset-es2015": "^6.16.0",
+      "babel-preset-stage-2": "^6.17.0",
+      "babel-watch": "^2.0.3",
+      "chalk": "^1.1.3",
+      "concurrently": "^3.1.0",
+      "jspm": "^0.16.46",
+      "minimist": "^1.2.0",
+      "nodemon": "^1.11.0",
+      "shelljs": "^0.7.4"
+    }
+  }
+}

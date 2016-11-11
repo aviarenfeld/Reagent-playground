@@ -1,0 +1,90 @@
+// Presentation
+.modal {
+  position: fixed;
+  z-index: 1000;
+  @include trbl(  );
+
+  .modal-curtain {
+    position: fixed;
+    z-index: 1;
+    @include trbl(  );
+    background: black;
+    opacity: 0.5;
+    @include transition( opacity 333ms );
+  }
+
+  .modal-window {
+    position: absolute;
+    z-index: 2;
+    @include centerXY();
+    @include transition( all 333ms ease-out );
+    width: 64vw;
+    overflow: hidden;
+    background-color: white;
+
+    .modal-content {
+      padding: 32px;
+    }
+
+    .modal-actions {
+      padding: 32px;
+      background: #F3F3F3;
+      text-align: center;
+
+      .button {
+        margin-right: 10px;
+      }
+
+      .cancel {
+        @include pill-button( $emphasis );
+      }
+    }
+  }
+}
+
+// Animation Stages
+.intro-enter, .intro-appear {
+  .modal-curtain {
+    opacity: 0;
+  }
+
+  .modal-window {
+    opacity: 0;
+    @include transform( translate(-50%, 0%) );
+  }
+}
+
+.intro-enter-active, .intro-appear-active {
+  .modal-curtain {
+    opacity: 0.5;
+  }
+
+  .modal-window {
+    opacity: 1;
+    @include transition-delay( 123ms );
+    @include transform( translate(-50%, -50%) );
+  }
+}
+
+.intro-leave {
+  .modal-curtain {
+    opacity: 0.5;
+  }
+
+  .modal-window {
+    opacity: 1;
+    @include transform( translate(-50%, -50%) );
+  }
+}
+
+.intro-leave-active {
+  .modal-curtain {
+    @include transition-delay( 123ms );
+    opacity: 0;
+  }
+
+  .modal-window {
+    opacity: 0;
+    @include transform( translate(-50%, 0%) );
+  }
+}

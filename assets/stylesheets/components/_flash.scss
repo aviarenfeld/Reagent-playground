@@ -1,0 +1,59 @@
+// Presentation
+.flash {
+  position: fixed;
+  z-index: 1000;
+  @include trbl( auto, 0, 0, 0 );
+  background-color: $accent;
+
+  &.warn {
+    background-color: $emphasis;
+  }
+
+  @include transition( all 500ms ease-out );
+
+  color: white;
+  padding: 30px 40px;
+
+  @include display(flex);
+  @include flex-direction( row );
+  @include flex-wrap( no-wrap );
+  @include align-items( center );
+
+  .flash-content {
+    @include flex-grow( 1 );
+  }
+
+  .button {
+    background: transparent;
+    padding: 0;
+  }
+}
+
+// Animation Stages
+.intro-enter, .intro-appear {
+  &.flash {
+    opacity: 0;
+    @include transform( translateY( 100% ) );
+  }
+}
+
+.intro-enter-active, .intro-appear-active {
+  &.flash {
+    opacity: 1;
+    @include transform();
+  }
+}
+
+.intro-leave {
+  &.flash {
+    opacity: 1;
+    @include transform();
+  }
+}
+
+.intro-leave-active {
+  &.flash {
+    opacity: 0;
+    @include transform( translateY( 100% ) );
+  }
+}

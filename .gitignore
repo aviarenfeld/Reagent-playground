@@ -1,0 +1,38 @@
+# node modules ( anywhere )
+node_modules
+
+# when installing ISO server, backed-up reagent package is sent to this name
+package.orig.json
+
+# ignore system files.
+.DS_Store
+.env
+
+# Client Application Assets
+/node_modules
+npm-debug.log
+
+/public/jspm_packages
+/public/assets
+/public/index.html
+/public/server
+
+# Generated iconfont stylesheet
+/assets/stylesheets/base/_symbols.sass
+
+# Rails Specific: #
+
+# Ignore bundler config.
+/.bundle
+
+# Ignore the default SQLite database.
+/db/*.sqlite3
+/db/*.sqlite3-journal
+
+# Ignore all logfiles and tempfiles.
+/log/*
+!/log/.keep
+/tmp
+
+#editors/IDe's
+*.sublime-*

@@ -1,0 +1,47 @@
+body {
+  // margin: 0;
+}
+
+nav {
+  border-bottom: 2px solid $accent;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+
+  a {
+    @include ghost-button(  );
+    margin-right: 10px;
+
+    &.active {
+      background: $accent;
+      color: white;
+    }
+  }
+}
+
+.outer-layout > h4 {
+  img {
+    width: 60px;
+    height: auto;
+    margin-right: 10px;
+  }
+
+  img, span {
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+.inner-layout {
+  border: 1px solid $accent;
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.session {
+  float: right;
+  border: 1px solid $accent;
+  border-radius: 6px;
+  padding: 20px;
+  @include clearfix(  );
+  text-align: center;
+}

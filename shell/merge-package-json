@@ -1,0 +1,255 @@
+#!/usr/bin/env node
+
+/* global test, cp, exec */
+require('shelljs/global');
+const chalk = require('chalk');
+const format = require('util').format;
+const path = require('path');
+const writeFile = require('fs').writeFileSync;
+// colorize output...
+const chalkError = chalk.bold.red;
+const chalkStatus = chalk.green;
+const chalkWarn = chalk.yellow;
+
+
+/* ----------------------- NOT NEEDED PRESENTLY --------------------- */
+msgAndDie('THIS SCRIPT IS NOT CURRENTLY USED. DO NOT RUN AGAIN!');
+
+
+
+
+/**
+ * Merge Reagent's JSPM config and all dependencies and devDependencies
+ * into an ExpressJS-based server app's package.json
+ * Server app's package file is backed up to `package.orig.json`
+ *
+ * Run w/out arguments for usage help
+ */
+
+// remove path to node, and script name
+const args = process.argv.slice(2);
+
+/**
+ * Top-level package.json keys to merge
+ */
+const TLKEYS = [
+  'jspm'
+];
+
+/**
+ * Backup Server app's package.json file to this name.
+ */
+ServerPackageBackupFile = 'package.orig.json';
+
+const ERRORS = {
+  ERR_MISSING_REAGENT_PAGKAGE : 'Reagent package.json not found at "%s"',
+  ERR_MISSING_EXPRESS_PAGKAGE : 'Server App package.json not found at "%s"',
+  ERR_BACKUP_FILE_EXISTS      : `Backup file "${ServerPackageBackupFile}" `
+                                + 'already exists. Merge has apparently already been run. '
+                                + 'Please restore original package.json and try again.',
+  BACKUP_FAIL                 : 'Failed to backup original App server package.json. exiting.'
+};
+
+/**
+ * Validate inputs then execute tasks
+ */
+checkInputs(args);
+main(args);
+process.exit(0);
+/* - fin - */
+
+
+/**
+ * Run core tasks for merging package files
+ */
+function main(args) {
+  const reagentPackageFile = args[0];
+  const expressPackageFile = args[1];
+  const loc = path.parse(expressPackageFile);
+  const destDir = path.resolve(loc.dir);
+  const localLoc = path.parse(reagentPackageFile);
+  const localDir = path.resolve(localLoc.dir);
+
+  // will exit on error
+  backupPackageFile(expressPackageFile, ServerPackageBackupFile);
+
+  // load packages json
+  const origPackage = require( path.resolve(reagentPackageFile) );
+  const serverPackage = require( path.resolve(expressPackageFile) );
+
+  serverPackage = mergeTopLevelKeys(origPackage, serverPackage, TLKEYS);
+
+  writePackageJson(serverPackage, expressPackageFile);
+
+  const depends = collectDepends(origPackage, 'dependencies');
+  const devDepends = collectDepends(origPackage, 'devDependencies');
+
+  copyJspmConfig(localDir, destDir);
+
+  if (depends) {
+    npmInstall(destDir, depends, '--save');
+  }
+
+  if (devDepends) {
+    npmInstall(destDir, devDepends, '--save-dev');
+  }
+
+
+  jspmInstall(destDir);
+
+  console.log(chalk.blue.bold(`Finished!\n Inspect the contents of ${expressPackageFile}`));
+}
+
+function copyJspmConfig(local_dir, dest_dir) {
+  const destPubDir = path.join(dest_dir, 'public');
+
+  // create public dir if not exists
+  if (!test('-d', destPubDir)) {
+    mkdir('-p', destPubDir);
+  }
+
+  const localPubFile = path.join(local_dir, 'public/config.js');
+  const destPubFile = path.join(dest_dir, 'public/config.js');
+  // warn(`local: ${localPubFile}; dest: ${destPubFile}`);
+  status(`Copying jspm config file from public/config.js to ${dest_dir}/public/config.js`);
+  cp('-n', localPubFile, destPubFile);
+}
+
+/**
+ * run npm install
+ * flags = `--save` | `--save-dev`
+ */
+function npmInstall(dest_dir, module_array, flags) {
+  const modules = module_array.join(' ');
+  const cmd = `cd ${dest_dir} && npm install ${flags} ${modules}`;
+  console.log(chalk.yellow.dim(`~> Installing modules for ${flags}: ${modules}`));
+  rc = exec(cmd);
+  status(rc);
+}
+
+function jspmInstall(dest_dir) {
+  const cmd = `cd ${dest_dir} && jspm install`;
+  console.log(chalk.yellow.dim(`~> Installing jspm modules`));
+  rc = exec(cmd);
+  status(rc);
+}
+
+/**
+ * Return array of module names for key (devDependencies | dependencies)
+ * FALSE returned if package data does not contain `key`
+ */
+function collectDepends(json, key) {
+  // console.log(json, key);
+  if (json[key]) {
+    return Object.keys(json[key]);
+  } else {
+    return false;
+  }
+}
+
+/**
+ * Copy each key specified in global TLKEYS into `new_pack`
+ * also copy `postinstall` from old to new, IFF new does not have one
+ */
+function mergeTopLevelKeys(old_pack, new_pack, keys) {
+  keys.forEach(function(key) {
+    if (old_pack[key]) {
+      status(`copying "${key} into server package`);
+      new_pack[key] = old_pack[key];
+    } else {
+      warn(`"${key}" not found in Reagent package`);
+    }
+  })
+
+  if (old_pack['scripts']['postinstall']) {
+    if (new_pack['scripts']['postinstall']) {
+      warn(`server app package has postinstall script; Reagent's script will NOT be copied: server script: ${ new_pack['scripts']['postinstall'] }`);
+    } else {
+      new_pack['scripts']['postinstall'] = old_pack['scripts']['postinstall'];
+      status('postinstall script copied from source package to destination package');
+    }
+  }
+
+  return new_pack;
+}
+
+function writePackageJson(json, file) {
+  const rc = writeFile(file, JSON.stringify(json, null, 2));
+}
+
+/**
+ * cp App server's package.json to a backup file in prep
+ * for merging Reagent's depends into original package.json.
+ */
+function backupPackageFile(package_file, backup_name) {
+  const loc = path.parse(package_file);
+  const newLoc = path.join(loc.dir, backup_name);
+
+  if (fileExists(newLoc)) {
+    msgAndDie(ERRORS.ERR_BACKUP_FILE_EXISTS);
+  }
+
+  status(`Backing up ${package_file} to ${backup_name}`);
+  const rc = cp('-n', package_file, newLoc); // cp but do not overwrite (-n)
+  if (rc.code === 0) {
+    status(`\tSuccess! ${newLoc}`);
+  } else {
+    warn(rc.stderr);
+    msgAndDie(ERRORS.BACKUP_FAIL);
+  }
+}
+
+/**
+ * print progress messages
+ */
+function status(msg) {
+  console.log( chalkStatus(`~> ${msg}`) );
+}
+
+/**
+ * log message in threatening colors
+ */
+function warn(msg) {
+  console.log( chalkWarn(msg) );
+}
+
+/**
+ * Validate inputs and requirements
+ */
+function checkInputs(args) {
+  if (args.length < 2) {
+    usageThenDie();
+  }
+
+  const reagentPackageFile = args[0];
+  const expressPackageFile = args[1];
+
+  if (!fileExists(reagentPackageFile)) {
+    msgAndDie(ERRORS.ERR_MISSING_REAGENT_PAGKAGE, reagentPackageFile);
+  }
+
+  if (!fileExists(expressPackageFile)) {
+    msgAndDie(ERRORS.ERR_MISSING_EXPRESS_PAGKAGE, expressPackageFile);
+  }
+}
+
+/**
+ * returns true if `file` path exists and is a file.
+ */
+function fileExists(file) {
+  return test('-f', file);
+}
+
+function msgAndDie() {
+  console.log( chalkError(format.apply(null, Array.prototype.slice.call(arguments))) );
+  process.exit(2);
+}
+
+function usageThenDie() {
+  const l = console.log;
+  const scriptName = process.argv[1];
+  l('Usage:')
+  l(`${path.basename(scriptName)} <path-to-reagent-package.json> <path-to-ExpressJS-package.json>`);
+  process.exit(1);
+}
+

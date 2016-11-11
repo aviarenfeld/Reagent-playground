@@ -1,0 +1,226 @@
+form {
+  text-align: center;
+
+  @include media( $min-sm ) {
+    text-align: left;
+  }
+
+  h4 {
+    @include font-size( 10px );
+    font-weight: bold;
+    text-transform: uppercase;
+    border-bottom: 1px solid $grey-light;
+    padding-bottom: 6px;
+    margin-bottom: 20px;
+    margin-top: 30px;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+}
+
+label {
+  @include font-size(18px);
+}
+
+#{$all-text-inputs} {
+  @include font-size(18px);
+  width:100%;
+  padding:15px;
+  margin-bottom: 10px;
+  border: 1px solid $grey-med;
+  border-radius: 4px;
+  outline: none;
+
+  @include media($min-sm) {
+    padding:20px 15px;
+  }
+}
+
+#{$all-button-inputs} {
+  @include pill-button();
+  outline: none;
+}
+
+select {
+  outline: none;
+}
+
+.validation_error {
+  @include font-size(18px);
+}
+
+.validation_message {
+  @include font-size(14px);
+}
+
+::-webkit-input-placeholder { opacity:1; }
+:-moz-placeholder { opacity:1; }
+::-moz-placeholder { opacity:1; }
+:-ms-input-placeholder { opacity:1; }
+
+.select-wrapper {
+  position:relative;
+  width:100%;
+  height:31px;
+  overflow: hidden;
+  background:#ffffff;
+  border: 1px solid $grey-med;
+  border-radius: 4px;
+  display: inline-block;
+  vertical-align: bottom;
+
+  @extend .icon;
+  @extend .icon-chevron-down;
+
+  &:before {
+    color: $accent;
+    position: absolute;
+    z-index: 1;
+    right: 10px;
+    top: 10px;
+  }
+
+  select {
+    cursor: pointer;
+    width:120%;
+    height:31px;
+    padding-left:15px;
+    background: transparent;
+    border: 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  @include media($min-sm) {
+    height: 31px;
+    select {
+      height: 31px;
+    }
+
+    &:before {
+      top: 10px;
+    }
+  }
+}
+
+@include media( $min-sm ) {
+
+  form label {
+    display: inline-block;
+    display: none;
+  }
+
+  .form-group {
+    @include clearfix();
+    margin-bottom: 8px;
+
+    .select-wrapper {
+      margin-bottom: 10px;
+    }
+
+    .checkbox, .radio {
+      line-height: normal;
+
+      label {
+        display: inline-block;
+        margin: 0 !important;
+        vertical-align: middle;
+      }
+
+      input, span {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 10px;
+      }
+    }
+
+    .half, .third, .quarter {
+      width: 50%;
+      padding-left: 10px;
+      padding-right: 10px;
+      display: inline-block;
+      vertical-align: top;
+
+      &:first-child {
+        padding-left: 0;
+      }
+
+      &:last-child {
+        padding-right: 0;
+      }
+    }
+
+    .third {
+      width: 33.333333333%;
+    }
+
+    .quarter {
+      width: 25%;
+    }
+  }
+}
+
+.errors {
+  #{$all-text-inputs} {
+    background: tint( $coral, 90 );
+  }
+
+  &.checkbox {
+    label {
+      color: $coral;
+    }
+  }
+
+  .select-wrapper {
+    background: tint( $coral, 90 );
+  }
+}
+
+.error-message {
+  color: $coral;
+  font-weight: bold;
+  font-style: italic;
+  padding-left: 6 px;
+  position: relative;
+  @include font-size( 14px );
+  top: -6px;
+
+  .select & {
+    top: 4px;
+  }
+}
+
+p.error-message {
+  @include font-size( 18px );
+}
+
+.input-wrapper {
+  overflow: hidden;
+  position: relative;
+  @include button(  );
+
+  &:before {
+    content: 'Add File';
+  }
+
+  .file-input {
+    cursor: pointer;
+    height: 100%;
+    position:absolute;
+    top: 0;
+    right: 0;
+    z-index: 99;
+    /*This makes the button huge. If you want a bigger button, increase the font size*/
+    font-size:50px;
+    /*Opacity settings for all browsers*/
+    opacity: 0;
+    -moz-opacity: 0;
+    filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+  }
+}
+
+.form-actions {
+  padding: 20px;
+}

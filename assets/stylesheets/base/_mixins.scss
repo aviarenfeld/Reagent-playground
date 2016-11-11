@@ -1,0 +1,162 @@
+// Converting px to rem (IE8 fallback)
+@mixin font-size($size) {
+  font-size: $size;
+  font-size: rem($size);
+}
+
+// Absolute Centering & Framing:
+@mixin centerX() {
+  position: relative;
+  left: 50%;
+  @include transform( translateX(-50%) );
+}
+
+@mixin centerY() {
+  position: relative;
+  top: 50%;
+  @include transform( translateY(-50%) );
+}
+
+@mixin centerXY() {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  @include transform( translate(-50%, -50%) );
+}
+
+@mixin trbl( $top: 0, $right: $top, $bottom: $top, $left: $right ) {
+  top: $top;
+  right: $right;
+  bottom: $bottom;
+  left: $left;
+}
+
+// Bootstrap-style variable width '.container'
+@mixin vw-container( $max-width: $screen-md, $base-padding: 20px ) {
+  padding: 0 $base-padding;
+  @include outer-container;
+  @include media($min-xs) { max-width: 100%; }
+  @include media($min-sm) { max-width: 100%; }
+  @include media($min-md) { max-width: min( $max-width, $screen-md ); }
+  @include media($min-lg) { max-width: min( $max-width, $screen-lg ); }
+}
+
+@mixin omega-reset($nth) {
+  &:nth-child(#{$nth}) { margin-right: flex-gutter(); }
+  &:nth-child(#{$nth}+1) { clear: none }
+}
+
+@mixin remove-container() {
+  padding: 0;
+  @include outer-container;
+  @include media($min-xs) { max-width: none; }
+  @include media($min-sm) { max-width: none; }
+  @include media($min-md) { max-width: none; }
+  @include media($min-lg) { max-width: none; }
+}
+
+/*
+  auto-columns:
+  Places the necessary queries, spans and omegas to set your culumn-counts on a per-screen-size basis.
+  Arguments come in pairs, each set representing the colums-per-row and the nth-child for wrapping.
+  Note: Column count and nth-child should awlays wbe hte same numer. The reason we need the nth-child
+  arguments at all: Neat's `omega` mixin apparently can't parse #{arg}n into '2n' to save it's life,
+  so it has to be written out. :( .derp.
+*/
+
+@mixin auto-columns( $xs: 1, $xsn: 1n, $sm: 2, $smn: 2n, $md: 3, $mdn: 3n, $lg: 4, $lgn: 4n ) {
+
+  @include media( $min-xs ) {
+    @include span-columns( $grid-columns / $xs );
+    @include omega( $xsn );
+  }
+
+  @include media( $min-sm ) {
+    @include omega-reset( $xsn );
+    @include span-columns( $grid-columns / $sm );
+    @include omega( $smn );
+  }
+
+  @include media( $min-md ) {
+    @include omega-reset( $smn );
+    @include span-columns( $grid-columns / $md );
+    @include omega( $mdn );
+  }
+
+  @include media( $min-lg ) {
+    @include omega-reset( $mdn );
+    @include span-columns( $grid-columns / $lg );
+    @include omega( $lgn );
+  }
+}
+
+@mixin button( $color: $accent, $text-color: white, $hover-color: shade( $color, 20 ), $text-hover-color: $text-color, $border-color: $color ) {
+  width: 100%;
+  display: block;
+  cursor: pointer;
+  @include user-select( none );
+  padding: 8px 14px;
+  border: 2px solid $border-color;
+  border-radius: 3px;
+
+  background: $color;
+  color: $text-color;
+  @include font-size( 12px );
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+
+  @include transition( all 123ms );
+
+  span {
+    vertical-align: middle;
+  }
+
+  .icon {
+    @include font-size( 24px );
+    vertical-align: middle;
+
+    &:last-child {
+      margin-left: 10px;
+    }
+
+    &:first-child {
+      margin-right: 10px;
+    }
+  }
+
+  &:hover {
+    background: $hover-color;
+    color: $text-hover-color;
+  }
+
+  @include media($min-xs) {
+    width: auto;
+    display: inline-block;
+  }
+}
+
+@mixin pill-button( $color: $accent ) {
+  @include button( $color, white, shade( $color, 20 ), white, transparent );
+}
+
+@mixin pill-button-sm( $color: $accent ) {
+  @include button( $color, white, shade( $color, 20 ), white, transparent );
+  padding: 3px 9px;
+  @include font-size( 10px );
+
+  .icon {
+    @include font-size( 14px );
+
+    &:last-child {
+      margin-left: 6px;
+    }
+
+    &:first-child {
+      margin-right: 6px;
+    }
+  }
+}
+
+@mixin ghost-button( $color: $accent ) {
+  @include button( transparent, $color, $color, white, $color );
+}
